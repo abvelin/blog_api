@@ -1,8 +1,5 @@
 package com.abvelin.blog_api.category;
 
-import com.abvelin.blog_api.post.Post;
-import com.abvelin.blog_api.post.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,15 +10,11 @@ import java.util.List;
 @RequestMapping("/api/categories")
 @CrossOrigin
 public class CategoryController {
-    @Autowired
-    private CategoryService category_service;
+//    @Autowired
+    private final CategoryService category_service;
 
-    @GetMapping
-    public List<Category> get_all_categories() { return category_service.get_all_categories();}
-
-    @GetMapping("/{id}")
-    public Category get_category_by_id(@PathVariable int id){
-        return category_service.get_category_by_id(id);
+    public CategoryController(CategoryService category_service){
+        this.category_service = category_service;
     }
 
     @PostMapping
@@ -31,16 +24,33 @@ public class CategoryController {
         return new ResponseEntity<>(saved_category, HttpStatus.CREATED);
     }
 
+    @GetMapping
+    public List<Category_dto> get_all_categories() { return category_service.get_all_categories();}
+
+//    @GetMapping
+//    public List<CategoryDto> get_all_categories() { return category_service.get_all_categories();}
+
+    @GetMapping("/{id}")
+    public Category_id_name_dto get_category(@PathVariable int id){
+        return category_service.get_category_by_id(id);
+    }
+
+    @GetMapping("/{id}/posts")
+    public Category_with_posts_dto get_category_with_posts(@PathVariable int id){
+        return category_service.get_category_with_posts(id);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Category> update_category(@PathVariable int id, @RequestBody Category category){
-        Category updated_category = category_service.update_category(id, category);
-        return new ResponseEntity<>(updated_category, HttpStatus.CREATED);
+    public ResponseEntity<Category_dto> update_category(@PathVariable int id, @RequestBody Category_dto category_dto){
+
+        return new ResponseEntity<>(category_service
+                .update_category(id, category_dto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public Category delete_category(@PathVariable int id){
-        Category category = category_service.get_category_by_id(id);
+    public Category_id_name_dto delete_category(@PathVariable int id){
+        Category_id_name_dto category_to_delete = category_service.get_category_by_id(id);
         category_service.delete_category(id);
-        return category;
+        return category_to_delete;
     }
 }

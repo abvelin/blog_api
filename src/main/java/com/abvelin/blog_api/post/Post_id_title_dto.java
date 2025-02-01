@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post_dto_id_title {
+public class Post_id_title_dto {
     private int id;
     private String title;
 }
